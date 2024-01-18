@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(schema = "employee")
+@Table(schema = "employee_records")
 public class Employee {
 
     @Id
@@ -24,10 +27,10 @@ public class Employee {
     String projectId;
 
     @Column(name = "date_from")
-    String dateFrom;
+    LocalDate dateFrom;
 
     @Column(name = "date_to")
-    String dateTo;
+    LocalDate dateTo;
 
     @Column(name = "first_name")
     String firstName;
@@ -38,7 +41,7 @@ public class Employee {
     @Column(name = "email")
     String email;
 
-    public Employee(String employeeId, String projectId, String dateFrom, String dateTo) {
+    public Employee(String employeeId, String projectId, LocalDate dateFrom, LocalDate dateTo) {
         this.employeeId = employeeId;
         this.projectId = projectId;
         this.dateFrom = dateFrom;

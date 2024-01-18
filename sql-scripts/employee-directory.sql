@@ -5,15 +5,15 @@ USE `employee_sirma_db`;
 -- Table structure for table `employee`
 --
 
-DROP TABLE IF EXISTS `employee`;
+DROP TABLE IF EXISTS `employee_records`;
 
-CREATE TABLE `employee` (
+CREATE TABLE `employee_records` (
   `id` int NOT NULL AUTO_INCREMENT,
   `employee_id` int NOT NULL,
   `project_id` int NOT NULL,
   `date_from` varchar(45) DEFAULT NULL,
-  `date_to` varchar(45) DEFAULT NULL,
-  `first_name` varchar(45) DEFAULT NULL,
+  `date_to` date DEFAULT NULL,
+  `first_name` date DEFAULT NULL,
   `last_name` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
