@@ -4,12 +4,14 @@ import com.sirma.employees.dao.EmployeeRepository;
 import com.sirma.employees.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService{
+@Transactional
+public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
@@ -30,8 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         if (result.isPresent()) {
             theEmployee = result.get();
-        }
-        else {
+        } else {
             // we didn't find the employee
             throw new RuntimeException("Did not find employee id - " + theId);
         }

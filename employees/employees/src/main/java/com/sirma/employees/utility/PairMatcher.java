@@ -2,23 +2,20 @@ package com.sirma.employees.utility;
 
 import com.sirma.employees.entity.Employee;
 import com.sirma.employees.service.EmployeeService;
-import jakarta.persistence.Tuple;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-
-
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @NoArgsConstructor
 @Component
 public class PairMatcher {
     static EmployeeService employeeService;
+
 
     static Map<Pair<Employee, Employee>, Long> pairsAndDaysTogether = new HashMap<>();
 
@@ -28,7 +25,6 @@ public class PairMatcher {
         employeeService = theEmployeeService;
     }
 
-    @Bean //it is not necessary and works fine without @Bean because @Component annotation
     public static void pairComparator() {
         List<Employee> dbEmployees = employeeService.findAll();
         System.out.println("DB employee list = + " + dbEmployees);
@@ -55,10 +51,8 @@ public class PairMatcher {
                 }
             }
         }
-        System.out.println(pairMap);
+        System.out.println(" The winminng pairs are : " + pairMap);
 
-
-        // check if these employees have same
 
         Collection<Pair<Employee, Employee>> pairList = pairMap.values();
         for (Pair<Employee, Employee> employeePair : pairList) {
@@ -67,48 +61,61 @@ public class PairMatcher {
 
             LocalDate dateToEmployee1 = employeePair.getFirst().getDateTo();
             LocalDate dateToEmployee2 = employeePair.getSecond().getDateTo();
+            System.out.println(" **** " + employeePair.getSecond().getDateTo());
             long daysBetween = 0;
 
+
+            // I can keep always in mind which number is bigger , but easier is with Math.abs();
             // dateFrom1 -------------------- dateTo1
             // ------dateFrom2++++++++dateTo2-------------
             if (dateFromEmployee1.isBefore(dateFromEmployee2) && dateToEmployee1.isAfter(dateToEmployee2)) {
-                daysBetween = Duration.between(dateFromEmployee2, dateToEmployee2).toDays();
+                daysBetween = ChronoUnit.DAYS.between(dateFromEmployee2, dateToEmployee2);
                 updateDataInMap(employeePair, daysBetween);
             }
 
             // dateFrom1 -------------------- dateTo1
             // ------dateFrom2++++++++++++++++-----------dateTo2
             if (dateFromEmployee1.isBefore(dateFromEmployee2) && dateToEmployee1.isBefore(dateToEmployee2)) {
-                daysBetween = Duration.between(dateFromEmployee2, dateToEmployee1).toDays();
+                daysBetween = ChronoUnit.DAYS.between(dateFromEmployee2, dateToEmployee1);
                 updateDataInMap(employeePair, daysBetween);
             }
 
             // --------------dateFrom1++++++++++----------- dateTo1
             // ------dateFrom2------------------dateTo2-------------
             if (dateFromEmployee1.isAfter(dateFromEmployee2) && dateToEmployee1.isAfter(dateToEmployee2)) {
-                daysBetween = Duration.between(dateFromEmployee1, dateToEmployee2).toDays();
+                daysBetween = ChronoUnit.DAYS.between(dateFromEmployee1, dateToEmployee2);
                 updateDataInMap(employeePair, daysBetween);
             }
 
             // --------------dateFrom1++++++++++dateTo1--------------------
             // ------dateFrom2-------------------------dateTo2-------------
             if (dateFromEmployee1.isAfter(dateFromEmployee2) && dateToEmployee1.isBefore(dateToEmployee2)) {
-                daysBetween = Duration.between(dateFromEmployee1, dateToEmployee1).toDays();
+                daysBetween = ChronoUnit.DAYS.between(dateFromEmployee1, dateToEmployee1);
                 updateDataInMap(employeePair, daysBetween);
             }
         }
+        System.out.println("Calculating....");
+        long maxDaysTogether = 0;
+        Optional<Map.Entry<Pair<Employee, Employee>, Long>> maxEntry = pairsAndDaysTogether.entrySet().stream().max(Map.Entry.comparingByValue());
+        maxDaysTogether = maxEntry.get().getValue();
 
-
+        if (maxDaysTogether == 0) {
+            System.out.println("No pairs found");
+        } else {
+            Pair<Employee, Employee> maxTogherPair = maxEntry.get().getKey();
+            System.out.println("Employee 1 = " + maxTogherPair.getFirst().getEmployeeId());
+            System.out.println("Employee 2 = " + maxTogherPair.getSecond().getEmployeeId());
+            System.out.println("They were together for " + maxDaysTogether + " in project " + maxTogherPair.getSecond().getProjectId());
+        }
     }
 
-    @Bean
-    private static void updateDataInMap(Pair<Employee, Employee> empPair, long daysTogether) {
+    public static void updateDataInMap(Pair<Employee, Employee> empPair, long daysTogether) {
         if (pairsAndDaysTogether.containsKey(empPair)) {
             //that pair exists and we have to update it
             long days = pairsAndDaysTogether.get(empPair) + daysTogether;
-            pairsAndDaysTogether.put(empPair, days);
+            pairsAndDaysTogether.put(empPair, Math.abs(days));
         } else {
-            pairsAndDaysTogether.put(empPair, daysTogether);
+            pairsAndDaysTogether.put(empPair, Math.abs(daysTogether));
         }
     }
 

@@ -6,13 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(schema = "employee_records")
+@Table(schema = "employee")
 public class Employee {
 
     @Id

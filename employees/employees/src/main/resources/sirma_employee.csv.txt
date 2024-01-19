@@ -1,3 +1,0 @@
-143, 12, '2013-11-01', '2014-01-05', 'Peter', 'Petrov', 'No client input'),
-218, 10, '2012-05-16', NULL, 'Todor', 'George', 'No client input'),
-143, 10, '2009-01-01', '2011-04-27', 'Peter', 'Petrov', 'No client input'),
